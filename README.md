@@ -1,1 +1,3 @@
-# t-maze2015
+# behavior
+
+leftright.py: determines whether maze barrier goes on left or right
