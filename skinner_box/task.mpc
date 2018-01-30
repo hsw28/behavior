@@ -89,3 +89,6 @@ S2,
     0": SET S(N) = T --> S3
 S3
     1#R^Lickometer: SET L(N) = T ---> SX
+    
+    
+// do i need to print the data or is this sufficient?? already printing trial number
