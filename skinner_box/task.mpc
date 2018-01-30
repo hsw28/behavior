@@ -108,4 +108,11 @@ S1,
 S2,
     #R^Lickometer: add i ---> S3
 S3
+<<<<<<< HEAD
     .01": SET Y(N) = i ---> SX
+=======
+    1#R^Lickometer: SET L(N) = T ---> SX
+    
+    
+// do i need to print the data or is this sufficient?? already printing trial number
+>>>>>>> 17aa085c7f4ee5c7a78031650bba1df29861967f
