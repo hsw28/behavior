@@ -35,57 +35,77 @@
 ^sound = 8
 ^lickometer = 4 \input
 
+DIM O = 2 \ time start and time off
 DIM C = 49 \ cue time
 DIM S = 49 \ spout time
 DIM L = 49 \ first lick time
+DIM Y = 49 \ number of licks
 
-
+\ z1 is cue time on
+\ z2 is spout time in
 
 \ want to randomly pick variable interval from this list
 LIST T = 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90
 
-S.S.1
+S.S.1,
 S1,
-    0": RANDI F=G; --->S2 /randomly selects interval time
-                          / also want to record trial number here
-
+    0.01": ON ^pulse; SET O(1) = T --> S2    \ pulse to start and record start time
 S2,
-    F": ON ^pulse; ON ^lightR; ON ^lightL; ON ^sound; Z1 ---> S3  /dont know if this actually will randomly select time? is F" a thing???
-                                                                  /z1 for cue time
+    0.05" : OFF ^pulse --> S3
+
 S3,
-    .05": OFF ^pulse --> S4 /only want pulse for super short
+    0.01": RANDI F=G; --->S4  \randomly selects interval time
 
 S4,
-    6.95": OFF ^lightR; OFF ^lightL; OFF ^sound; ON ^spout; Z2 ---> S5  / turns off cues, puts in spout
-                                                                        /z2 for spout time
+    F": ON ^pulse; ON ^lightR; ON ^lightL; ON ^sound; Z1 ---> S5  \ z1 for cue time
 
 S5,
-    4": OFF ^spout; Z1 ---> S6  turns off spout
+    .05": OFF ^pulse --> S6 \ only want pulse for super short
 
-S6,
-    ADD N;SHOW 1,Trial,N; IF N=50 [@TrueEnd, @FalseContinue]   /checks if 50 trials have been done
-                                  @End: -->S7
-                                  @Cont: ---> S1
+S6
+    6.95": OFF ^lightR; OFF ^lightL; OFF ^sound; ON ^spout; Z2 ---> S7  \ turns off cues, puts in spout
+                                                                        \ z2 for spout time
 S7,
-    1": --> STOPABORT
+    4": OFF ^spout ---> S8  turns off spout
+
+S8,
+    ADD N;SHOW 1,Trial,N; IF N=50 [@TrueEnd, @FalseContinue]   \ checks if 50 trials have been done
+                                  @End: -->S9
+                                  @Cont: ---> S3
+S9,
+    0.01": ON ^pulse; SET O(2) = T --> S10 \ ending Pulse and recording end time
+
+S10,
+    0.05" : OFF ^pulse --> S11
+
+S11,
+    .01": --> STOPABORTFLUSH
 
 
 
-S.S.2 / timer
+S.S.2, \ timer
 S1,
-  .01": SET T = T+.01 --> SX
+  .01": SET T = T+.01 --> S1
 
 
-S.S.3  / cue on time on
+S.S.3,  \ cue on time on
 S1,
     #Z1 --> S2
 S2,
-    0": SET C(N) = T ---> SX
+    0.01": SET C(N) = T ---> S1
 
-S.S.3  / spout in time
+S.S.4, \ spout in time
 S1,
     #Z2 --> S2
 S2,
-    0": SET S(N) = T --> S3
+    0.01": SET S(N) = T --> S3
 S3
-    1#R^Lickometer: SET L(N) = T ---> SX
+    1#R^Lickometer: SET L(N) = T;  Z3 ---> S1
+
+S.S.5, \ lick counting
+S1,
+    #Z3 --> S2
+S2,
+    #R^Lickometer: add i ---> S3
+S3
+    .01": SET Y(N) = i ---> SX
