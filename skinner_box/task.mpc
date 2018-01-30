@@ -53,10 +53,10 @@ S2,
     F": ON ^pulse; ON ^lightR; ON ^lightL; ON ^sound; Z1 ---> S3  /dont know if this actually will randomly select time? is F" a thing???
                                                                   /z1 for cue time
 S3,
-    0": OFF ^pulse --> S4 /only want pulse for super short
+    .05": OFF ^pulse --> S4 /only want pulse for super short
 
 S4,
-    7": OFF ^lightR; OFF ^lightL; OFF ^sound; ON ^spout; Z2 ---> S5  / turns off cues, puts in spout
+    6.95": OFF ^lightR; OFF ^lightL; OFF ^sound; ON ^spout; Z2 ---> S5  / turns off cues, puts in spout
                                                                         /z2 for spout time
 
 S5,
