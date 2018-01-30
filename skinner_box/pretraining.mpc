@@ -1,0 +1,51 @@
+\pretraining: reward delivered on a variable interval (VI) average 60s
+\schedule for 50 trials.
+\For each trial, animal receives spout access for 7 seconds.
+\Lickometer will record licking times.
+\
+\Pulse to amplifier will occur at the start of each stimulus period as well as the start
+\and end of the trial period.
+\
+\WANT TO RECORD: time of stimulus start (which should also give LFP pulse), time of spout out, time of lick
+\
+\inputs:
+\lickometer
+\
+\output:
+\pulse to amplifier (must design & set up)
+\spout
+
+\C= trial count
+\R = number of rewards received (trials licked)
+
+^pulse = 1 \output
+^spout = 2 \output
+^lickometer = 4 \input
+
+\ want to randomly pick variable interval from this list
+LIST T = 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90
+
+S.S.1
+S1,
+    0": RANDI F=G; --->S2
+
+S2,
+    F": ON ^spout ---> S3  \want this variable interval \dont know if this actually will randomly select time
+
+S3,
+    7": OFF ^spout; Z1 ---> S4  \activates z pulse for lickometer
+    \start timer
+
+S4,
+    ADD C;SHOW 1,Trial,C; IF N=50 [@TrueEnd, @FalseContinue]
+                                  @End: -->S5
+                                  @Cont: ---> S1
+S5,
+    1": --> STOPABORT
+
+S.S.2
+S1,
+  #Z1 --> S2
+S2,
+  #R^lickometer:  --> SX  \want time of licks
+                          \ do we have to turn off the lickometer after the 7 seconds?

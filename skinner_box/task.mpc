@@ -1,0 +1,91 @@
+\Each session includes 50 trials, which occurred on a VI
+\60 second schedule. On each trial, the both of the light stimulus and
+\the sound stimulus are activated for 7s. The off of the
+\stimuli result in spout access for 4 seconds.
+\Lickometer will record licking times.
+\
+\Pulse to amplifier will occur at the start of each stimulus period as well as the start
+\and end of the trial period.
+\
+\inputs:
+\lickometer
+\
+\output:
+\pulse to amplifier (must design & set up)
+\stimulus light 1
+\stimulus light 2
+\sonalert
+\spout
+
+\WANT TO RECORD:
+\ time of stimulus start (which should also give LFP pulse)
+\ time of spout out
+\time of lick
+\
+
+\N= trial count
+\R = number of rewards received (trials licked)
+\T = session timer
+
+
+^pulse = 1
+^spout = 2
+^lightR = 4
+^lightL = 5
+^sound = 8
+^lickometer = 4 \input
+
+DIM C = 49 \ cue time
+DIM S = 49 \ spout time
+DIM L = 49 \ first lick time
+
+
+
+\ want to randomly pick variable interval from this list
+LIST T = 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90
+
+S.S.1
+S1,
+    0": RANDI F=G; --->S2 /randomly selects interval time
+                          / also want to record trial number here
+
+S2,
+    F": ON ^pulse; ON ^lightR; ON ^lightL; ON ^sound; Z1 ---> S3  /dont know if this actually will randomly select time? is F" a thing???
+                                                                  /z1 for cue time
+S3,
+    0": OFF ^pulse --> S4 /only want pulse for super short
+
+S4,
+    7": OFF ^lightR; OFF ^lightL; OFF ^sound; ON ^spout; Z2 ---> S5  / turns off cues, puts in spout
+                                                                        /z2 for spout time
+
+S5,
+    4": OFF ^spout; Z1 ---> S6  turns off spout
+
+S6,
+    ADD N;SHOW 1,Trial,N; IF N=50 [@TrueEnd, @FalseContinue]   /checks if 50 trials have been done
+                                  @End: -->S7
+                                  @Cont: ---> S1
+S7,
+    1": --> STOPABORT
+
+
+
+S.S.2 / timer
+S1,
+  .01": SET T = T+.01 --> SX
+
+
+S.S.3  / cue on time on
+S1,
+    #Z1 --> S2
+S2,
+    0": SET C(N) = T ---> SX
+
+S.S.3  / spout in time
+S1,
+    #Z2 --> S2
+S2,
+    0": SET S(N) = T --> S3
+S3
+    1#R^Lickometer: SET L(N) = T ---> SX
