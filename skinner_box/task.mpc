@@ -45,7 +45,7 @@ DIM Y = 49 \ number of licks
 \ z2 is spout time in
 
 \ want to randomly pick variable interval from this list
-LIST T = 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90
+LIST R = 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90
 
 S.S.1,
 S1,
@@ -54,7 +54,7 @@ S2,
     0.05" : OFF ^pulse ---> S3
 
 S3,
-    0.01": RANDI F=G; --->S4  \randomly selects interval time
+    0.01": RANDI R=F; --->S4  \randomly selects interval time
 
 S4,
     F": ON ^pulse; ON ^lightR; ON ^lightL; ON ^sound; Z1 ---> S5  \ z1 for cue time
@@ -66,10 +66,10 @@ S6,
     6.95": OFF ^lightR; OFF ^lightL; OFF ^sound; ON ^spout; Z2 ---> S7  \ turns off cues, puts in spout
                                                                         \ z2 for spout time
 S7,
-    4": OFF ^spout ---> S8  turns off spout
+    4": OFF ^spout ---> S8  \turns off spout
 
 S8,
-    ADD N;SHOW 1,Trial,N; IF N=50 [@TrueEnd, @FalseContinue]   \ checks if 50 trials have been done
+    ADD N; SHOW 1, Trial, N; IF N=50 [@TrueEnd, @FalseContinue]   \ checks if 50 trials have been done
                                   @End: --->S9
                                   @Cont: ---> S3
 S9,
@@ -99,7 +99,7 @@ S1,
     #Z2 ---> S2
 S2,
     0.01": SET S(N) = T ---> S3
-S3
+S3,
     1#R^Lickometer: SET L(N) = T;  Z3 ---> S1
 
 S.S.5, \ lick counting
