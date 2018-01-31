@@ -49,9 +49,9 @@ LIST T = 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90
 
 S.S.1,
 S1,
-    0.01": ON ^pulse; SET O(1) = T --> S2    \ pulse to start and record start time
+    0.01": ON ^pulse; SET O(1) = T ---> S2    \ pulse to start and record start time
 S2,
-    0.05" : OFF ^pulse --> S3
+    0.05" : OFF ^pulse ---> S3
 
 S3,
     0.01": RANDI F=G; --->S4  \randomly selects interval time
@@ -60,9 +60,9 @@ S4,
     F": ON ^pulse; ON ^lightR; ON ^lightL; ON ^sound; Z1 ---> S5  \ z1 for cue time
 
 S5,
-    .05": OFF ^pulse --> S6 \ only want pulse for super short
+    .05": OFF ^pulse ---> S6 \ only want pulse for super short
 
-S6
+S6,
     6.95": OFF ^lightR; OFF ^lightL; OFF ^sound; ON ^spout; Z2 ---> S7  \ turns off cues, puts in spout
                                                                         \ z2 for spout time
 S7,
@@ -70,49 +70,42 @@ S7,
 
 S8,
     ADD N;SHOW 1,Trial,N; IF N=50 [@TrueEnd, @FalseContinue]   \ checks if 50 trials have been done
-                                  @End: -->S9
+                                  @End: --->S9
                                   @Cont: ---> S3
 S9,
-    0.01": ON ^pulse; SET O(2) = T --> S10 \ ending Pulse and recording end time
+    0.01": ON ^pulse; SET O(2) = T ---> S10 \ ending Pulse and recording end time
 
 S10,
-    0.05" : OFF ^pulse --> S11
+    0.05" : OFF ^pulse ---> S11
 
 S11,
-    .01": --> STOPABORTFLUSH
+    .01": ---> STOPABORTFLUSH
 
 
 
 S.S.2, \ timer
 S1,
-  .01": SET T = T+.01 --> S1
+  .01": SET T = T+.01 ---> S1
 
 
 S.S.3,  \ cue on time on
 S1,
-    #Z1 --> S2
+    #Z1 ---> S2
 S2,
     0.01": SET C(N) = T ---> S1
 
 S.S.4, \ spout in time
 S1,
-    #Z2 --> S2
+    #Z2 ---> S2
 S2,
-    0.01": SET S(N) = T --> S3
+    0.01": SET S(N) = T ---> S3
 S3
     1#R^Lickometer: SET L(N) = T;  Z3 ---> S1
 
 S.S.5, \ lick counting
 S1,
-    #Z3 --> S2
+    #Z3 ---> S2
 S2,
     #R^Lickometer: add i ---> S3
-S3
-<<<<<<< HEAD
+S3,
     .01": SET Y(N) = i ---> SX
-=======
-    1#R^Lickometer: SET L(N) = T ---> SX
-    
-    
-// do i need to print the data or is this sufficient?? already printing trial number
->>>>>>> 17aa085c7f4ee5c7a78031650bba1df29861967f

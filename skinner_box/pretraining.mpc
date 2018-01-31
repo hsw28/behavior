@@ -35,56 +35,56 @@ DIM Y = 49 \ number of licks
 
 S.S.1,
 S1,
-    0.01": ON ^pulse; SET O(1) = T --> S2    \ pulse to start and record start time
+    0.01": ON ^pulse; SET O(1) = T ---> S2    \ pulse to start and record start time
 S2,
-    0.05" : OFF ^pulse --> S3
+    0.05" : OFF ^pulse ---> S3
 S3,
-    .01": ON ^lickometer --> S4 \start with spout out
+    .01": ON ^lickometer ---> S4 \start with spout out
 S4,
-    1#R^Lickometer --> S5      \ wait until animal licks
-S5
-    6": OFF ^lickometer --> S6    \ spout out for 6 seconds, now will start trial
+    1#R^Lickometer ---> S5      \ wait until animal licks
+S5,
+    6": OFF ^lickometer ---> S6    \ spout out for 6 seconds, now will start trial
 S6,
     0.01": RANDI F=G; --->S7  \randomly selects interval time
 S7,
-    .F": ON ^pulse; ON ^spout; Z2 --> S8 \ pulses and puts in spout
+    .F": ON ^pulse; ON ^spout; Z2 ---> S8 \ pulses and puts in spout
                                       \ z2 for spout time
-S8
-    .05": OFF ^pulse --> S9 \ turns off pulse
+S8,
+    .05": OFF ^pulse ---> S9 \ turns off pulse
 
 S9,
     5.95": OFF ^spout; Z2 ---> S10  \ turns off cues, puts in spout
 
 S10,
     ADD N;SHOW 1,Trial,N; IF N=50 [@TrueEnd, @FalseContinue]   \ checks if 50 trials have been done
-                                  @End: -->S11
+                                  @End: --->S11
                                   @Cont: ---> S6
 S11,
-    0.01": ON ^pulse; SET O(2) = T --> S12 \ ending Pulse and recording end time
+    0.01": ON ^pulse; SET O(2) = T ---> S12 \ ending Pulse and recording end time
 
 S12,
-    0.05" : OFF ^pulse --> S11
+    0.05" : OFF ^pulse ---> S11
 
 S13,
-    .01": --> STOPABORTFLUSH
+    .01": ---> STOPABORTFLUSH
 
 
 
 S.S.2, \ timer
 S1,
-  .01": SET T = T+.01 --> S1
+  .01": SET T = T+.01 ---> S1
 
 S.S.3, \ spout in time
 S1,
-    #Z2 --> S2
+    #Z2 ---> S2
 S2,
-    0.01": SET S(N) = T --> S3
+    0.01": SET S(N) = T ---> S3
 S3
     1#R^Lickometer: SET L(N) = T;  Z3 ---> S1
 
 S.S.5, \ lick counting
 S1,
-    #Z3 --> S2
+    #Z3 ---> S2
 S2,
     #R^Lickometer: add i ---> S3
 S3
