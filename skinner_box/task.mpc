@@ -34,7 +34,6 @@
 ^lightR = 4
 ^lightL = 5
 ^sound = 8
-^lickometer = 4 \input
 
 \ want to randomly pick variable interval from this list
 LIST E = 30", 35", 40", 45", 50", 55", 60", 65", 70", 75", 80", 85", 90"
@@ -61,7 +60,7 @@ S4,
 S5,
     .05": OFF ^pulse ---> S6 \ only want pulse for super short
 S6,
-    6.95": OFF ^lightR; OFF ^lightL; OFF ^sound; ON ^spout; Z2 ---> S7  \ turns off cues, puts in spout
+    8": OFF ^lightR; OFF ^lightL; OFF ^sound; ON ^spout; Z2 ---> S7  \ turns off cues, puts in spout
                                                                         \ z2 for spout time
 S7,
     7.95": OFF ^spout; Z2 ---> S10
@@ -96,15 +95,3 @@ S1,
     #Z2 ---> S2
 S2,
     0.01": SET S(N) = T; Z3 ---> S1
-
-S.S.5, \ lick counting
-S1,
-    #Z3 ---> S2
-S2,
-    1#R^Lickometer: SET L(N) = T; Z4 ---> S1
-
-S.S.6
-S1,
-    #Z4: SET Y(N) = 1 ---> S2
-S2,
-    #R^Lickometer: add Y(N) ---> SX

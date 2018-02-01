@@ -1,0 +1,78 @@
+
+\pretraining: reward delivered on a variable interval (VI) average 60s
+\schedule for 50 trials.
+\For each trial, animal receives spout access for 6 seconds.
+\Lickometer will record licking times.
+\
+\Pulse to amplifier will occur at the start of each stimulus period as well as the start
+\and end of the trial period.
+\
+\WANT TO RECORD: time of stimulus start (which should also give LFP pulse), time of spout out, time of lick
+\
+\
+\output:
+\pulse to amplifier (must design & set up)
+\spout
+
+\HERE PULSES WHEN SPOUT GOES OUT
+
+\N= trial count
+\T = session timer
+
+^pulse = 1 \output
+^spout = 2 \output
+
+\ want to randomly pick variable interval from this list
+LIST E = 15", 20", 25", 30", 35", 40", 45"
+
+DIM O = 1 \ time start and time off
+DIM S = 75 \ spout time
+DIM L = 75 \ first lick time
+DIM Y = 75 \ number of licks
+
+\ z2 is spout time in
+
+S.S.1,
+S1,
+    0.01": ON ^pulse; SET O(0) = T ---> S2    \ pulse to start and record start time
+S2,
+    .05" : OFF ^pulse ---> S3
+S3,
+    .01": ON ^spout; SET N=0; Z2 ---> S4 \start with spout out
+S4,
+    20": OFF ^spout ---> S7    \ spout out for 6 seconds, now will start trial
+S5,
+    0.01": RANDI F=E --->S6  \randomly selects interval time
+S6,
+    F#T: ON ^pulse; ON ^spout; ADD N; SHOW 1, Trial, N; Z2 ---> S7 \ pulses and puts in spout
+                                      \ z2 for spout time
+S7,
+    .05": OFF ^pulse ---> S8 \ turns off pulse
+
+S8,
+    15": OFF ^spout; Z2 ---> S9
+
+S9,
+    .01": IF N=75  [@TrueEnd, @FalseContinue]   \ checks if 75 trials have been done
+                                  @End: --->S10
+                                  @Cont: ---> S5
+S10,
+    0.01": ON ^pulse; SET O(1) = T ---> S11 \ ending Pulse and recording end time
+
+S11,
+    0.01" : OFF ^pulse ---> S13
+
+S12,
+    .01": ---> STOPABORTFLUSH
+
+
+
+S.S.2, \ timer
+S1,
+  .01": SET T = T+.01 ---> S1
+
+S.S.3, \ spout in time
+S1,
+    #Z2 ---> S2
+S2,
+    0.01": SET S(N) = T; Z3 ---> S1
