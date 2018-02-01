@@ -25,7 +25,7 @@
 ^lickometer = 4 \input
 
 \ want to randomly pick variable interval from this list
-LIST Q = 30", 35", 40", 45", 50", 55", 60"
+LIST E = 30", 35", 40", 45", 50", 55", 60"
 
 DIM O = 1 \ time start and time off
 DIM S = 75 \ spout time
@@ -46,7 +46,7 @@ S4,
 S5,
     6": OFF ^spout ---> S6    \ spout out for 6 seconds, now will start trial
 S6,
-    0.01": RANDI F=Q --->S7  \randomly selects interval time
+    0.01": RANDI F=E --->S7  \randomly selects interval time
 S7,
     F#T: ON ^pulse; ON ^spout; ADD N; SHOW 1, Trial, N; Z2 ---> S8 \ pulses and puts in spout
                                       \ z2 for spout time
