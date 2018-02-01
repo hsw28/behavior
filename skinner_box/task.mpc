@@ -45,7 +45,7 @@ DIM Y = 49 \ number of licks
 \ z2 is spout time in
 
 \ want to randomly pick variable interval from this list
-LIST R = 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90
+LIST Q = 30", 35", 40", 45", 50", 55", 60", 65", 70", 75", 80", 85", 90"
 
 S.S.1,
 S1,
@@ -54,10 +54,10 @@ S2,
     0.05" : OFF ^pulse ---> S3
 
 S3,
-    0.01": RANDI R=F; --->S4  \randomly selects interval time
+    0.01": RANDI F=Q; --->S4  \randomly selects interval time
 
 S4,
-    F": ON ^pulse; ON ^lightR; ON ^lightL; ON ^sound; Z1 ---> S5  \ z1 for cue time
+    F#T: ON ^pulse; ON ^lightR; ON ^lightL; ON ^sound; Z1 ---> S5  \ z1 for cue time
 
 S5,
     .05": OFF ^pulse ---> S6 \ only want pulse for super short
@@ -69,7 +69,7 @@ S7,
     4": OFF ^spout ---> S8  \turns off spout
 
 S8,
-    ADD N; SHOW 1, Trial, N; IF N=50 [@TrueEnd, @FalseContinue]   \ checks if 50 trials have been done
+    0.01": ADD N; SHOW 1, Trial, N; IF N=50 [@TrueEnd, @FalseContinue]   \ checks if 50 trials have been done
                                   @End: --->S9
                                   @Cont: ---> S3
 S9,
