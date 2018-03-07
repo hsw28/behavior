@@ -1,4 +1,4 @@
-
+\ VERSION THAT REQUIRES A LICK TO START
 \pretraining: reward delivered on a variable interval (VI) average 60s
 \schedule for 50 trials.
 \For each trial, animal receives spout access for 6 seconds.
@@ -16,9 +16,10 @@
 \pulse to amplifier (must design & set up)
 \spout
 
-\C= trial count
-\R = number of rewards received (trials licked)
-\T = sesstion timer
+\HERE PULSES WHEN SPOUT GOES OUT
+
+\N= trial count
+\T = session timer
 
 ^pulse = 1 \output
 ^spout = 2 \output

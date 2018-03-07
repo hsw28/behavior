@@ -4,9 +4,6 @@
 \stimuli result in spout access for 6 seconds.
 
 \CHANGES:
-\
-\Feb 7, 2018: changed back to pulse only on cue start (and beginning and end of day)
-\
 \Pre Feb 5, 2018: Pulse to amplifier will occur at the start of each stimulus period as well as the start
 \and end of the trial period.
 \
@@ -29,8 +26,8 @@
 
 \WANT TO RECORD:
 \ time of cue start (LFP pulse)
-\ time of spout out (LFP pulse)       \ stopped pulsing on 2-7-18
-\ time of spout in and cue off (LFP pulse)     \ stopped pulsing on 2-7-18
+\ time of spout out (LFP pulse)
+\ time of spout in and cue off (LFP pulse)
 
 
 ^pulse = 1
@@ -64,28 +61,33 @@ S1,
     0.01": ON ^pulse; SET O(0) = T ---> S2    \ pulse to start and record start time
 S2,
     .05" : OFF ^pulse ---> S3
-
 S3,
     0.01": RANDI F=E --->S4  \randomly selects interval time
 S4,
-    F#T: ON ^lightR; ON ^lightL; ON ^sound;  Z1 ---> S5  \ z1 for cue time
+    F#T: ON ^pulse; ON ^lightR; ON ^lightL; ON ^sound;  Z1 ---> S5  \ z1 for cue time
 S5,
-    8": ON ^spout; Z2 ---> S6  \ puts in spout and pulses  \ z2 for spout time
-
+    .05": OFF ^pulse ---> S6 \ only want pulse for super short
 S6,
-    8": OFF ^spout; OFF ^lightR; OFF ^lightL; OFF ^sound; Z3 ---> S7
-
+    8": ON ^spout; ON ^pulse; Z2 ---> S7  \ puts in spout and pulses  \ z2 for spout time
 S7,
-    .01": ADD N; SHOW 1, Trial, N; IF N=74  [@TrueEnd, @FalseContinue]   \ checks if 50 trials have been done
-                                  @End: --->S8
-                                  @Cont: ---> S3
-S8,
-    0.01": ON ^pulse; SET O(1) = T ---> S9 \ ending Pulse and recording end time
+    .05": OFF ^pulse ---> S8
 
+S8,
+    8": OFF ^spout; OFF ^lightR; OFF ^lightL; OFF ^sound; ON ^pulse; Z3 ---> S9
 S9,
-    0.01" : OFF ^pulse ---> S10
+    .05": OFF ^pulse ---> S10
 
 S10,
+    .01": ADD N; SHOW 1, Trial, N; IF N=74  [@TrueEnd, @FalseContinue]   \ checks if 50 trials have been done
+                                  @End: --->S11
+                                  @Cont: ---> S3
+S11,
+    0.01": ON ^pulse; SET O(1) = T ---> S12 \ ending Pulse and recording end time
+
+S12,
+    0.01" : OFF ^pulse ---> S13
+
+S13,
     .01": ---> STOPABORTFLUSH
 
 

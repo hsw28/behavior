@@ -1,0 +1,9 @@
+^pulse = 1
+
+S.S.1,
+S1,
+    0.01": ON ^pulse ---> S2    \ pulse to start and record start time
+S2,
+    .05" : OFF ^pulse ---> S3
+S3,
+    5" : ON ^pulse ---> S2

@@ -1,7 +1,7 @@
-
+\ VERSION THAT DOESNT REQUIRE A LICK TO START
 \pretraining: reward delivered on a variable interval (VI) average 60s
-\schedule for 75 trials.
-\For each trial, animal receives spout access for 15 seconds.
+\schedule for 50 trials.
+\For each trial, animal receives spout access for 6 seconds.
 \Lickometer will record licking times.
 \
 \Pulse to amplifier will occur at the start of each stimulus period as well as the start
@@ -9,6 +9,8 @@
 \
 \WANT TO RECORD: time of stimulus start (which should also give LFP pulse), time of spout out, time of lick
 \
+\inputs:
+\lickometer
 \
 \output:
 \pulse to amplifier (must design & set up)
@@ -21,6 +23,7 @@
 
 ^pulse = 1 \output
 ^spout = 2 \output
+^lickometer = 4 \input
 
 \ want to randomly pick variable interval from this list
 LIST E = 15", 20", 25", 30", 35", 40", 45"
@@ -40,7 +43,7 @@ S2,
 S3,
     .01": ON ^spout; SET N=0; Z2 ---> S4 \start with spout out
 S4,
-    20": OFF ^spout ---> S7    \ spout out for 20 seconds, now will start trial
+    20": OFF ^spout ---> S5    \ spout out for 6 seconds, now will start trial
 S5,
     0.01": RANDI F=E --->S6  \randomly selects interval time
 S6,
@@ -50,17 +53,17 @@ S7,
     .05": OFF ^pulse ---> S8 \ turns off pulse
 
 S8,
-    15": OFF ^spout; Z2 ---> S9
+    15": OFF ^spout; Z2 ---> S9  \ turns off cues, puts in spout
 
 S9,
-    .01": IF N=75  [@TrueEnd, @FalseContinue]   \ checks if 75 trials have been done
+    .01": IF N=75  [@TrueEnd, @FalseContinue]   \ checks if 50 trials have been done
                                   @End: --->S10
                                   @Cont: ---> S5
 S10,
     0.01": ON ^pulse; SET O(1) = T ---> S11 \ ending Pulse and recording end time
 
 S11,
-    0.01" : OFF ^pulse ---> S13
+    0.01" : OFF ^pulse ---> S12
 
 S12,
     .01": ---> STOPABORTFLUSH
@@ -76,3 +79,15 @@ S1,
     #Z2 ---> S2
 S2,
     0.01": SET S(N) = T; Z3 ---> S1
+
+S.S.4, \ lick counting
+S1,
+    #Z3 ---> S2
+S2,
+    1#R^Lickometer: SET L(N) = T; Z4 ---> S1
+
+S.S.5
+S1,
+    #Z4: SET Y(N) = 1 ---> S2
+S2,
+    #R^Lickometer: add Y(N) ---> SX
