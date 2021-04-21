@@ -1,0 +1,94 @@
+\Each session includes 100 trials where a trial is any time the animal gets a reward
+\is considered a trial. After getting rewarded at side A, animal must visit
+\other side of track (side B) before getting a rewarded again at side A
+\
+\inputs:
+\nosepokeA
+\nosepokeB
+\
+\outputs:
+\foodA
+\foodB
+
+\WANT TO RECORD:
+\ time of nose pokes
+\ time of pellet dispenser
+
+\N= trial count
+\T = session timer
+\C= poke count
+\L = last arm
+\A = current arm
+
+^foodA = 1
+^foodB = 2
+^nosepokeA = 3 \input
+^nosepokeB = 3 \input
+
+
+DIM O = 1 \ time start and time off
+DIM P = 500 \ poke time
+DIM F = 100 \ food time
+
+
+\ Z1 is poke time
+
+
+
+S.S.1,
+S1,
+    0.01": ON ^pulse; SET O(0) = T; SET N=0; SET L=2 ---> S2    \ pulse to start and record start time
+S2,
+    .05" : OFF ^pulse ---> S3
+    \\\\\\\\\\\\NEED SOMETHING HERE WHERE WE WAIT UNTIL POKE A OR B THEN DETERMINE WHICH
+
+S3,
+    1#R^nosepokeA --> S4 \wait until pokes A
+S4
+    F#T: ADD C; SET A=1; Z1 ---> S5 \animal is at arm A
+S5
+    .01": IF A!=L [@TrueReward, @FalseContinue] \if current arm isnt the last arm we give reward
+        @REWARD --> S6
+        @CONT               \ need to figure out how to go back to waiting
+S6
+    F#T: SET L=1; ON ^FOODA; ADD N; SHOW 1, Trial, N; Z1 ---> S7 \food at arm A
+
+
+///repeat same stuff for arm B
+
+S4,
+    F#T: ADD C; Z1 ---> S5 /poke time
+
+
+
+S10,
+    .01": IF N=100  [@TrueEnd, @FalseContinue]   \ checks if 100 trials have been done
+                                  @End: --->S11
+                                  @Cont: ---> S6
+S11,
+    0.01": ON ^pulse; SET O(1) = T ---> S12 \ ending Pulse and recording end time
+
+S12,
+    0.01" : OFF ^pulse ---> S13
+
+S13,
+    .01": ---> STOPABORTFLUSH
+
+
+S.S.2, \ timer
+S1,
+  .01": SET T = T+.01 ---> S1
+
+
+S.S.3, \poke time
+S1,
+  #Z1 ---> S2
+S2,
+  0.01": SET P(N) = T ---> S1
+
+
+S.S.4, \ food time
+S1,
+    #Z2 ---> S2
+S2,
+    0.01": SET F(N) = T; Z3 ---> S1
