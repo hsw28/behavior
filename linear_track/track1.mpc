@@ -11,10 +11,9 @@
 \foodB
 
 \WANT TO RECORD:
-\ time of nose pokes
-\ time of pellet dispenser
+\ time of pellet removal
 
-\N= trial count
+\N = trial count
 \T = session timer
 \C= poke count
 \L = last arm
@@ -23,15 +22,14 @@
 ^foodA = 1
 ^foodB = 2
 ^nosepokeA = 3 \input
-^nosepokeB = 3 \input
+^nosepokeB = 4 \input
 
 
 DIM O = 1 \ time start and time off
-DIM P = 500 \ poke time
-DIM F = 100 \ food time
+DIM P = 100 \ pellet removal time
 
 
-\ Z1 is poke time
+\ Z1 is pellet removal time
 
 
 
@@ -40,39 +38,31 @@ S1,
     0.01": ON ^pulse; SET O(0) = T; SET N=0; SET L=2 ---> S2    \ pulse to start and record start time
 S2,
     .05" : OFF ^pulse ---> S3
-    \\\\\\\\\\\\NEED SOMETHING HERE WHERE WE WAIT UNTIL POKE A OR B THEN DETERMINE WHICH
-
 S3,
-    1#R^nosepokeA --> S4 \wait until pokes A
+    .05": ON ^FOODA; ADD N; SHOW 1, Trial, N; Z1 ---> S4 \food at arm A
 S4
-    F#T: ADD C; SET A=1; Z1 ---> S5 \animal is at arm A
+    1#R^nosepokeA ---> S5
 S5
-    .01": IF A!=L [@TrueReward, @FalseContinue] \if current arm isnt the last arm we give reward
-        @REWARD --> S6
-        @CONT               \ need to figure out how to go back to waiting
+    Z1 --> S6
 S6
-    F#T: SET L=1; ON ^FOODA; ADD N; SHOW 1, Trial, N; Z1 ---> S7 \food at arm A
-
-
-///repeat same stuff for arm B
-
-S4,
-    F#T: ADD C; Z1 ---> S5 /poke time
-
-
-
-S10,
+    .05": ON ^FOODB; ADD N; SHOW 1, Trial, N; Z1 ---> S6 \food at arm B
+S7
+    1#R^nosepokeB ---> S8
+S8
+    Z1 --> S9
+S9,
     .01": IF N=100  [@TrueEnd, @FalseContinue]   \ checks if 100 trials have been done
-                                  @End: --->S11
-                                  @Cont: ---> S6
-S11,
+                                  @End: --->S10
+                                  @Cont: ---> S3
+S10,
     0.01": ON ^pulse; SET O(1) = T ---> S12 \ ending Pulse and recording end time
 
-S12,
+S11,
     0.01" : OFF ^pulse ---> S13
 
-S13,
+S12,
     .01": ---> STOPABORTFLUSH
+
 
 
 S.S.2, \ timer
@@ -80,15 +70,8 @@ S1,
   .01": SET T = T+.01 ---> S1
 
 
-S.S.3, \poke time
+S.S.3, \pellet removal time
 S1,
   #Z1 ---> S2
 S2,
   0.01": SET P(N) = T ---> S1
-
-
-S.S.4, \ food time
-S1,
-    #Z2 ---> S2
-S2,
-    0.01": SET F(N) = T; Z3 ---> S1
