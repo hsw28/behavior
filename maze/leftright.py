@@ -28,10 +28,10 @@ while right+left < 50:
         right = right+1
         inrowR = inrowR+1
         inrowL = 0
-        print "barrier goes on right"
+        print "force rat to right"
 
     if barrier == 2:
         left = left+1
         inrowL = inrowL+1
         inrowR = 0
-        print "barrier goes on left"
+        print "force rat to left"
