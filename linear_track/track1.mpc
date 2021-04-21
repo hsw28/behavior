@@ -43,13 +43,13 @@ S3,
 S4
     1#R^nosepokeA ---> S5
 S5
-    Z1 --> S6
+    0.01": Z1 --> S6
 S6
     .05": ON ^FOODB; ADD N; SHOW 1, Trial, N; Z1 ---> S6 \food at arm B
 S7
     1#R^nosepokeB ---> S8
 S8
-    Z1 --> S9
+    0.01": Z1 --> S9
 S9,
     .01": IF N=100  [@TrueEnd, @FalseContinue]   \ checks if 100 trials have been done
                                   @End: --->S10
