@@ -19,10 +19,10 @@
 \L = last arm
 \A = current arm
 
-^foodA = 1
-^foodB = 2
-^nosepokeA = 3 \input
-^nosepokeB = 4 \input
+^foodA = 1 \output
+^foodB = 2 \output
+^nosepokeA = 1 \input
+^nosepokeB = 2 \input
 
 
 DIM O = 1 \ time start and time off
@@ -35,32 +35,23 @@ DIM P = 100 \ pellet removal time
 
 S.S.1,
 S1,
-    0.01": ON ^pulse; SET O(0) = T; SET N=0; SET L=2 ---> S2    \ pulse to start and record start time
+    0.01": SET O(0) = T; SET N=0; SET L=2 ---> S2    \ record start time
 S2,
-    .05" : OFF ^pulse ---> S3
+    .01": ON ^FOODA ---> S3 \food at arm A
 S3,
-    .05": ON ^FOODA; ADD N; SHOW 1, Trial, N; Z1 ---> S4 \food at arm A
-S4
-    1#R^nosepokeA ---> S5
-S5
-    0.01": Z1 --> S6
-S6
-    .05": ON ^FOODB; ADD N; SHOW 1, Trial, N; Z1 ---> S6 \food at arm B
-S7
-    1#R^nosepokeB ---> S8
-S8
-    0.01": Z1 --> S9
-S9,
-    .01": IF N=100  [@TrueEnd, @FalseContinue]   \ checks if 100 trials have been done
-                                  @End: --->S10
-                                  @Cont: ---> S3
-S10,
-    0.01": ON ^pulse; SET O(1) = T ---> S12 \ ending Pulse and recording end time
+    1#R^nosepokeA: ADD N; SHOW 1, Trial, N; Z1; OFF ^FOODA ---> S4 \takes food at A
+S4,
+    .05": ON ^FOODB ---> S5 \food at arm B
+S5,
+    1#R^nosepokeB: ADD N; SHOW 1, Trial, N; Z1; OFF ^FOODB ---> S6 \takes food at B
+S6,
+    .01": IF N = 100  [@TrueEnd, @FalseContinue]   \ checks if 100 trials have been done
+                                  @End: ---> S7
+                                  @Cont: ---> S2
+S7,
+    0.01": SET O(1) = T ---> S11 \ ending Pulse and recording end time
 
-S11,
-    0.01" : OFF ^pulse ---> S13
-
-S12,
+S8,
     .01": ---> STOPABORTFLUSH
 
 
