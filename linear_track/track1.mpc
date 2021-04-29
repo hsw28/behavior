@@ -49,7 +49,7 @@ S6,
                                   @End: ---> S7
                                   @Cont: ---> S2
 S7,
-    0.01": SET O(1) = T ---> S11 \ ending Pulse and recording end time
+    0.01": SET O(1) = T ---> S8 \ ending Pulse and recording end time
 
 S8,
     .01": ---> STOPABORTFLUSH
